@@ -2,16 +2,15 @@ import { useRef, useState } from "react";
 import "./app.css";
 import WeatherBox from "./components/WeatherBox";
 import WeatherDetails from "./components/WeatherDetails";
-import error from "./Images/404.png";
 import clear from "./Images/clear.png";
 import rain from "./Images/rain.png";
 import snow from "./Images/snow.png";
 import cloud from "./Images/cloud.png";
 import mist from "./Images/mist.png";
 import smoke from "./Images/smoke.png";
+import error from "./Images/404.png";
 
 function App() {
-  // const [city, setCity] = useState("");
   const city = useRef(null);
   const APIKey = "e4e5c3ae19a7a47c9bb9ba7dd2d690af";
   const [noData, setNoData] = useState(false);
@@ -31,6 +30,7 @@ function App() {
       console.log("No data found");
       setNoData(true);
     } else {
+      setNoData(false);
       let temperature = `${parseInt(json.main.temp)}`;
       setTemperature(temperature);
       let description = `${json.weather[0].description}`;
@@ -83,18 +83,34 @@ function App() {
     );
   }
 
-  function NoDataFound() {
-    <div className="not-found">
-      <img src={error} alt="Error" />
-      <p>Oops! Invalid location :/</p>
-    </div>;
+  function ShowWeatherDetails() {
+    if (noData)
+      return (
+        <div>
+          <div className="not-found">
+            <img src={error} alt="Error" />
+            <p>Oops! Invalid location :/</p>
+          </div>
+        </div>
+      );
+    else
+      return (
+        <div>
+          <WeatherBox
+            image={image}
+            temperature={temperature}
+            description={description}
+          />
+          <WeatherDetails humidity={humidity} windSpeed={windSpeed} />
+        </div>
+      );
   }
 
   return (
     <div className="App">
       <div className="container">
         <SearchBox />
-        {noData ? (
+        {/* {noData ? (
           <NoDataFound />
         ) : (
           <div>
@@ -105,7 +121,8 @@ function App() {
             />
             <WeatherDetails humidity={humidity} windSpeed={windSpeed} />
           </div>
-        )}
+        )} */}
+        <ShowWeatherDetails />
       </div>
     </div>
   );
